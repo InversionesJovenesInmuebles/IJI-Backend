@@ -13,13 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.8.5
-
-      - name: Terraform Init
-        run: terraform init
+          terraform_version: 1.0.0
 
       - name: Fetch EC2 instance IP
         id: ec2_ip
