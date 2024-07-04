@@ -5,7 +5,7 @@ FROM maven:3.8.4-openjdk-17
 WORKDIR /app
 
 # Copiar el archivo JAR de la aplicación al contenedor
-COPY target/InversionesIJ-0.0.1-SNAPSHOT.jar app.jar
+COPY /app/target/InversionesIJ-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto en el que la aplicación se ejecutará
 EXPOSE 8080
