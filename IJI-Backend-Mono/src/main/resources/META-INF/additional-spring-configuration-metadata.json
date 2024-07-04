@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "spring.monolito.datasource.url",
+      "type": "java.lang.String",
+      "description": "Description for spring.monolito.datasource.url."
+    },
+    {
+      "name": "spring.monolito.datasource.username",
+      "type": "java.lang.String",
+      "description": "Description for spring.monolito.datasource.username."
+    },
+    {
+      "name": "spring.monolito.datasource.password",
+      "type": "java.lang.String",
+      "description": "Description for spring.monolito.datasource.password."
+    },
+    {
+      "name": "spring.propiedad.datasource.url",
+      "type": "java.lang.String",
+      "description": "Description for spring.propiedad.datasource.url."
+    },
+    {
+      "name": "spring.propiedad.datasource.username",
+      "type": "java.lang.String",
+      "description": "Description for spring.propiedad.datasource.username."
+    },
+    {
+      "name": "spring.propiedad.datasource.password",
+      "type": "java.lang.String",
+      "description": "Description for spring.propiedad.datasource.password."
+    },
+    {
+      "name": "spring.propiedad.datasource.driver-class-name",
+      "type": "java.lang.String",
+      "description": "Description for spring.propiedad.datasource.driver-class-name."
+    },
+    {
+      "name": "spring.monolito.datasource.driver-class-name",
+      "type": "java.lang.String",
+      "description": "Description for spring.monolito.datasource.driver-class-name."
+    }
+  ] }
