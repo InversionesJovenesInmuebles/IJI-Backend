@@ -23,11 +23,11 @@ jobs:
       - name: Build and push Docker images
         run: |
           echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker build -t frankecb04/inversiones-image ./InversionesIJ
+          docker build -t frankecb04/inversiones-image ./IJI-Backend-Mono
           docker tag frankecb04/inversiones-image frankecb04/inversiones-image:latest
           docker push frankecb04/inversiones-image:latest
           
-          docker build -t frankecb04/propiedad-image ./PropiedadService
+          docker build -t frankecb04/propiedad-image ./IJI-Backend-Micro
           docker tag frankecb04/propiedad-image frankecb04/propiedad-image:latest
           docker push frankecb04/propiedad-image:latest
           
