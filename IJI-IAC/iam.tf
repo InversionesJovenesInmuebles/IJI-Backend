@@ -1,5 +1,5 @@
-resource "aws_iam_role" "instance_role" {
-  name               = "instance-role"
+resource "aws_iam_role" "inversion_role" {
+  name               = "inversion-role"
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
     Statement = [
@@ -14,7 +14,7 @@ resource "aws_iam_role" "instance_role" {
 
 resource "aws_iam_role_policy" "instance_policy" {
   name = "instance-policy"
-  role = aws_iam_role.instance_role.id
+  role = aws_iam_role.inversion_role.id
 
   policy = jsonencode({
     Version   = "2012-10-17"
@@ -33,7 +33,7 @@ resource "aws_iam_role_policy" "instance_policy" {
   })
 }
 
-resource "aws_iam_instance_profile" "instance_profile" {
-  name = "instance-profile"
-  role = aws_iam_role.instance_role.name
+resource "aws_iam_instance_profile" "inversion_profile" {
+  name = "inversion-profile"
+  role = aws_iam_role.inversion_role.name
 }

@@ -1,5 +1,5 @@
-resource "aws_security_group" "instance" {
-  name        = "instance-security-group"
+resource "aws_security_group" "sa_group" {
+  name        = "sa-group"
   description = "Allow inbound traffic on ports 8001 and 8002"
 
   ingress = [
@@ -100,8 +100,8 @@ resource "aws_instance" "microservice" {
   ami                  = "ami-06c68f701d8090592"
   instance_type        = "t2.micro"
   key_name             = aws_key_pair.deployer.key_name
-  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
-  vpc_security_group_ids = [aws_security_group.instance.id]
+  iam_instance_profile = aws_iam_instance_profile.inversion_profile.name
+  vpc_security_group_ids = [aws_security_group.sa_group.id]
 
   tags = {
     Name = "inversiones-microservice"
@@ -127,5 +127,5 @@ resource "aws_instance" "microservice" {
               sudo docker-compose up -d
               EOF
 
-  depends_on = [aws_iam_instance_profile.instance_profile]
+  depends_on = [aws_iam_instance_profile.inversion_profile]
 }
