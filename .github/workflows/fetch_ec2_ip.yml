@@ -20,11 +20,19 @@ jobs:
           echo "Fetched IP: $INSTANCE_IP"
           echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
 
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/IJI.key
+          chmod 600 ~/.ssh/IJI.key
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/IJI.key
+
       - name: SSH and deploy
         env:
           INSTANCE_IP: ${{ env.INSTANCE_IP }}
         run: |
-          ssh -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${INSTANCE_IP} "cd /home/ec2-user && \
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/IJI.key ec2-user@${INSTANCE_IP} "cd /home/ec2-user && \
             sudo docker-compose down && \
             sudo rm -rf docker-compose-Microservice && \
             git clone https://github.com/Frankcb04/docker-compose-Microservice docker-compose-Microservice && \
