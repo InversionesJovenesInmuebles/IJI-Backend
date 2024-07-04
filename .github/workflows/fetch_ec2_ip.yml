@@ -31,8 +31,6 @@ jobs:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       - name: SSH and deploy
-        env:
-          INSTANCE_IP: ${{ steps.ec2_ip.outputs.INSTANCE_IP }}
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${INSTANCE_IP} << 'EOF'
             cd /home/ec2-user || exit
