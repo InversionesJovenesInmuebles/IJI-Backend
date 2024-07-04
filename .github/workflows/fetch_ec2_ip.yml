@@ -21,18 +21,22 @@ jobs:
           echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
 
       - name: SSH and deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.INSTANCE_IP }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ec2-user
-            sudo docker-compose down
-            sudo rm -rf docker-compose-Microservice/ 
-            git clone https://github.com/Frankcb04/docker-compose-Microservice
-            cd docker-compose-Microservice
-            git pull origin master
-            
-            # Detener y volver a construir contenedores
-            sudo docker-compose up -d --build
+        run: ssh ec2-user@${{ env.INSTANCE_IP }} -i ${{ secrets.EC2_SSH_KEY }} << 'EOF'
+          cd /home/ec2-user
+          sudo docker-compose down
+          sudo rm -rf docker-compose-Microservice
+          git clone https://github.com/Frankcb04/docker-compose-Microservice docker-compose-Microservice
+          cd docker-compose-Microservice
+          git pull origin master
+          sudo docker-compose up -d --build
+          
+          # Puedes agregar más comandos según sea necesario después del despliegue
+          
+          # Ejemplo: mostrar información del sistema después del despliegue
+          echo "Información del sistema:"
+          uname -a
+          
+          # Ejemplo: listar los contenedores en ejecución
+          echo "Contenedores en ejecución:"
+          sudo docker ps
+          EOF
