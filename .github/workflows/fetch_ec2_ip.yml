@@ -20,22 +20,21 @@ jobs:
           echo "Fetched IP: $INSTANCE_IP"
           echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/IJI.key
-          chmod 600 ~/.ssh/IJI.key
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/IJI.key
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       - name: SSH and deploy
         env:
-          INSTANCE_IP: ${{ env.INSTANCE_IP }}
+          INSTANCE_IP: ${{ steps.ec2_ip.outputs.INSTANCE_IP }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/IJI.key ec2-user@${INSTANCE_IP} "cd /home/ec2-user && \
-            sudo docker-compose down && \
-            sudo rm -rf docker-compose-Microservice && \
-            git clone https://github.com/Frankcb04/docker-compose-Microservice docker-compose-Microservice && \
-            cd docker-compose-Microservice && \
-            git pull origin master && \
-            sudo docker-compose up -d --build"
+          ssh -o StrictHostKeyChecking=no ec2-user@${INSTANCE_IP} << 'EOF'
+            cd /home/ec2-user || exit
+            sudo docker-compose down
+            sudo rm -rf docker-compose-Microservice
+            git clone https://github.com/Frankcb04/docker-compose-Microservice docker-compose-Microservice
+            cd docker-compose-Microservice || exit
+            git pull origin master
+            sudo docker-compose up -d --build
+          EOF
