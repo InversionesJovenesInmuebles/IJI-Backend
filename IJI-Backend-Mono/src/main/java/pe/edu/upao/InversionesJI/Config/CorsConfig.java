@@ -3,6 +3,7 @@ package pe.edu.upao.InversionesJI.Config;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -15,6 +16,9 @@ import java.io.IOException;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsConfig implements Filter {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -29,8 +33,7 @@ public class CorsConfig implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        String baseUrl = "http://localhost:4200";
-        response.setHeader("Access-Control-Allow-Origin", baseUrl);
+        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, HEAD, PATCH");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, credential, X-XSRF-TOKEN");
 

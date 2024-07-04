@@ -34,15 +34,15 @@ jobs:
       - name: Build and push Docker images
         run: |
           echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker build -t frankecb04/inversiones-image .
+          docker build -t frankecb04/inversiones-image ./InversionesIJ
           docker tag frankecb04/inversiones-image frankecb04/inversiones-image:latest
           docker push frankecb04/inversiones-image:latest
           
-          docker build -t frankecb04/propiedad-image ./propiedad-service
+          docker build -t frankecb04/propiedad-image ./PropiedadService
           docker tag frankecb04/propiedad-image frankecb04/propiedad-image:latest
           docker push frankecb04/propiedad-image:latest
           
-          docker build -t frankecb04/bd ./path/to/postgres-db
+          docker build -t frankecb04/bd ./bd
           docker tag frankecb04/bd frankecb04/bd:latest
           docker push frankecb04/bd:latest
 
@@ -54,13 +54,11 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user
+            sudo docker-compose down
+            sudo rm -rf docker-compose-Microservice/ 
             git clone https://github.com/Frankcb04/docker-compose-Microservice
             cd docker-compose-Microservice
             git pull origin master
-
-            # Iniciar Docker si no está iniciado
-            sudo systemctl start docker
-
+            
             # Detener y volver a construir contenedores
-            sudo docker-compose down
             sudo docker-compose up -d --build
