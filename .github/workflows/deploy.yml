@@ -1,4 +1,4 @@
-name: Deploy to EC2 Instance
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,48 +6,17 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  fetch-ip:
+    uses: ./.github/workflows/fetch_ec2_ip.yml
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  deploy-inversiones:
+    uses: ./.github/workflows/deploy_inversiones.yml
+    needs: fetch-ip
 
-      - name: Fetch EC2 instance IP
-        id: ec2_ip
-        run: |
-          INSTANCE_IP=$(terraform output -raw instance_ip | head -n 1)
-          echo "Fetched IP: $INSTANCE_IP"
-          echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
+  deploy-propiedad:
+    uses: ./.github/workflows/deploy_propiedad.yml
+    needs: fetch-ip
 
-      - name: Build and push Docker images
-        run: |
-          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker build -t frankecb04/inversiones-image ./IJI-Backend-Mono
-          docker tag frankecb04/inversiones-image frankecb04/inversiones-image:latest
-          docker push frankecb04/inversiones-image:latest
-          
-          docker build -t frankecb04/propiedad-image ./IJI-Backend-Micro
-          docker tag frankecb04/propiedad-image frankecb04/propiedad-image:latest
-          docker push frankecb04/propiedad-image:latest
-          
-          docker build -t frankecb04/bd ./bd
-          docker tag frankecb04/bd frankecb04/bd:latest
-          docker push frankecb04/bd:latest
-
-      - name: SSH and deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ steps.ec2_ip.outputs.INSTANCE_IP }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ec2-user
-            sudo docker-compose down
-            sudo rm -rf docker-compose-Microservice/ 
-            git clone https://github.com/Frankcb04/docker-compose-Microservice
-            cd docker-compose-Microservice
-            git pull origin master
-            
-            # Detener y volver a construir contenedores
-            sudo docker-compose up -d --build
+  deploy-bd:
+    uses: ./.github/workflows/deploy_bd.yml
+    needs: fetch-ip

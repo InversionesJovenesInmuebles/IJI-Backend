@@ -1,0 +1,26 @@
+name: Build and Push Propiedad Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Build and push propiedad image
+        run: |
+          docker build -t frankecb04/propiedad-image ./IJI-Backend-Micro
+          docker tag frankecb04/propiedad-image frankecb04/propiedad-image:latest
+          docker push frankecb04/propiedad-image:latest
